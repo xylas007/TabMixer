@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/icon128.png" width="80" alt="TabMixer Icon"/>
+<img src="tabmixer - By Xylas/assets/icon128.png" width="80" alt="TabMixer Icon"/>
 
 # TabMixer
 
@@ -23,7 +23,7 @@ Silence one tab, boost another to 600%, all without touching your system volume.
 > **Dark Mode** and **Light Mode** — switch instantly with one click.
 
 <!-- Replace this line with your actual screenshot after taking one from preview.html -->
-![TabMixer UI Preview](assets/preview.png)
+![TabMixer UI Preview](tabmixer - By Xylas/assets/preview.png)
 
 ---
 
