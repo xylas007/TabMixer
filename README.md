@@ -23,8 +23,7 @@ Silence one tab, boost another to 600%, all without touching your system volume.
 > **Dark Mode** and **Light Mode** — switch instantly with one click.
 
 <!-- Replace this line with your actual screenshot after taking one from preview.html -->
-![TabMixer UI Preview](tabmixer_-_By_Xylas/assets/preview.png)
-<img src="preview - tabmixer - By Xylas/assets/preview.png" width="900" alt="preview"/>
+![TabMixer UI Preview](tabmixer%20-%20By%20Xylas/assets/preview.png)
 
 ---
 
