@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TabMixer Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: #0D0D14;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  min-height: 100vh;
+  padding: 60px 40px;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* ── Mockup shell ── */
+.mockup-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.mockup-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #6056E8;
+  opacity: 0.7;
+}
+
+.popup {
+  width: 360px;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.06);
+  font-family: 'Outfit', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* DARK THEME */
+.popup.dark {
+  background: #08080C;
+  color: #EEEDF8;
+}
+.popup.dark .header   { background:#0E0E14; border-color:#1C1C28; }
+.popup.dark .status-bar { background:#0E0E14; border-color:#1C1C28; }
+.popup.dark .tab-card { background:#0E0E14; border-color:#1C1C28; }
+.popup.dark .vol-stepper { background:#16161F; border-color:#252535; }
+.popup.dark .mute-btn  { background:#16161F; border-color:#252535; color:#9694B0; }
+.popup.dark .preset-btn { background:#16161F; border-color:#1C1C28; color:#46445E; }
+.popup.dark .range-label { color:#46445E; }
+.popup.dark .footer    { background:#0E0E14; border-color:#1C1C28; }
+.popup.dark .brand-sub { color:#6660E8; }
+.popup.dark .brand-name { color:#EEEDF8; }
+.popup.dark .tab-title  { color:#9694B0; }
+.popup.dark .vol-display { color:#EEEDF8; }
+.popup.dark .track     { background:#1A1A26; }
+.popup.dark .step-btn  { color:#46445E; }
+.popup.dark .status-text { color:#46445E; }
+.popup.dark .btn-reset { background:#16161F; border-color:#252535; color:#9694B0; }
+.popup.dark .btn-icon  { background:#16161F; border-color:#252535; color:#9694B0; }
+.popup.dark .footer-tip { color:#46445E; }
+.popup.dark .watermark  { color:#6660E8; }
+
+/* LIGHT THEME */
+.popup.light {
+  background: #F4F3FF;
+  color: #1A1633;
+}
+.popup.light .header   { background:#FFFFFF; border-color:#DDD9FF; }
+.popup.light .status-bar { background:#FFFFFF; border-color:#DDD9FF; }
+.popup.light .tab-card { background:#FFFFFF; border-color:#DDD9FF; }
+.popup.light .vol-stepper { background:#EEEEFF; border-color:#C8C3F5; }
+.popup.light .mute-btn  { background:#EEEEFF; border-color:#C8C3F5; color:#4A4580; }
+.popup.light .preset-btn { background:#EEEEFF; border-color:#DDD9FF; color:#9590C8; }
+.popup.light .range-label { color:#9590C8; }
+.popup.light .footer    { background:#FFFFFF; border-color:#DDD9FF; }
+.popup.light .brand-sub { color:#6056E8; }
+.popup.light .brand-name { color:#1A1633; }
+.popup.light .tab-title  { color:#4A4580; }
+.popup.light .vol-display { color:#1A1633; }
+.popup.light .track     { background:#DDD9FF; }
+.popup.light .step-btn  { color:#9590C8; }
+.popup.light .status-text { color:#9590C8; }
+.popup.light .btn-reset { background:#EEEEFF; border-color:#C8C3F5; color:#4A4580; }
+.popup.light .btn-icon  { background:#EEEEFF; border-color:#C8C3F5; color:#4A4580; }
+.popup.light .footer-tip { color:#9590C8; }
+.popup.light .watermark  { color:#6056E8; }
+
+/* ── Shared styles ── */
+.header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 11px 14px;
+  border-bottom: 1px solid;
+}
+.brand { display:flex; align-items:center; gap:10px; }
+.brand-icon {
+  width:30px; height:30px; border-radius:8px; flex-shrink:0;
+  background: linear-gradient(135deg, #6056E8, #A855F7);
+  display:flex; align-items:center; justify-content:center;
+}
+.brand-icon svg { width:18px; height:18px; }
+.brand-name { font-size:15px; font-weight:700; letter-spacing:-0.3px; display:block; line-height:1; }
+.brand-sub  { font-size:10px; font-weight:600; letter-spacing:0.8px; text-transform:uppercase; display:block; line-height:1; margin-top:2px; }
+.header-actions { display:flex; gap:6px; align-items:center; }
+.btn-icon  { width:30px; height:30px; border-radius:6px; border:1px solid; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+.btn-icon svg { width:14px; height:14px; }
+.btn-reset { display:flex; align-items:center; gap:5px; padding:5px 10px 5px 8px; border-radius:6px; border:1px solid; font-family:Outfit,sans-serif; font-size:11.5px; font-weight:500; cursor:pointer; }
+.btn-reset svg { width:12px; height:12px; }
+
+.status-bar {
+  display:flex; align-items:center; gap:7px;
+  padding:7px 14px; border-bottom:1px solid;
+}
+.status-dot {
+  width:6px; height:6px; border-radius:50%;
+  background:#6056E8; flex-shrink:0;
+}
+.status-text { font-size:11px; font-weight:500; }
+
+.main { padding:10px; display:flex; flex-direction:column; gap:8px; }
+
+.tab-card {
+  border:1px solid; border-radius:10px;
+  padding:11px 12px 10px;
+}
+.tab-header { display:flex; align-items:center; gap:8px; margin-bottom:11px; }
+.tab-favicon { width:14px; height:14px; border-radius:3px; flex-shrink:0; }
+.tab-title { flex:1; font-size:12px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.playing-badge {
+  display:inline-block; width:6px; height:6px; border-radius:50%;
+  background:#22C55E; flex-shrink:0;
+  box-shadow:0 0 5px rgba(34,197,94,0.5);
+}
+.tab-controls { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+.mute-btn { width:27px; height:27px; border-radius:6px; border:1px solid; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+.mute-btn svg { width:14px; height:14px; }
+.vol-stepper { display:flex; align-items:center; border-radius:6px; border:1px solid; height:27px; overflow:hidden; }
+.step-btn { width:22px; height:100%; background:transparent; border:none; font-size:15px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; padding-bottom:1px; }
+.vol-display { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; min-width:38px; text-align:center; padding:0 2px; letter-spacing:-0.5px; }
+.vol-display.boosted { color:#6660E8; }
+
+.slider-section { display:flex; align-items:center; gap:8px; margin-bottom:9px; }
+.range-label { font-size:9.5px; font-weight:600; min-width:10px; text-align:center; }
+.boost-label { color:#6660E8; opacity:0.6; }
+.slider-wrap { flex:1; position:relative; height:22px; display:flex; align-items:center; }
+.track {
+  width:100%; height:6px; border-radius:3px; position:absolute;
+}
+.fill {
+  height:6px; border-radius:3px;
+  background: linear-gradient(to right, #5F5CE0, #A855F7);
+  position:absolute; left:0;
+}
+.thumb {
+  width:16px; height:16px; border-radius:50%; background:#fff;
+  box-shadow: 0 0 0 2.5px #6660E8, 0 2px 8px rgba(0,0,0,0.5);
+  position:absolute; top:50%; transform:translateY(-50%);
+  z-index:2;
+}
+.baseline {
+  position:absolute; left:50%; width:1.5px; height:13px;
+  background:rgba(255,255,255,0.13); border-radius:1px; top:50%; transform:translate(-50%,-50%);
+}
+
+.preset-row { display:flex; gap:5px; }
+.preset-btn {
+  flex:1; height:23px; border-radius:4px; border:1px solid;
+  font-family:Outfit,sans-serif; font-size:10px; font-weight:600; cursor:pointer;
+  white-space:nowrap;
+}
+.preset-btn.active {
+  background:rgba(100,96,232,0.12) !important;
+  border-color:#6660E8 !important;
+  color:#6660E8 !important;
+}
+
+.footer {
+  display:flex; align-items:center; justify-content:center; gap:7px;
+  padding:8px 14px; border-top:1px solid;
+}
+.watermark { display:flex; align-items:center; gap:5px; font-size:10px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; text-decoration:none; }
+.watermark svg { width:11px; height:11px; }
+.footer-sep { font-size:11px; opacity:0.5; }
+.footer-tip { font-size:10px; font-weight:400; letter-spacing:0.1px; }
+</style>
+</head>
+<body>
+
+<!-- DARK -->
+<div class="mockup-wrap">
+  <div class="mockup-label">Dark Mode</div>
+  <div class="popup dark">
+    <div class="header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M7 11.5v9h5L18 26V6l-6 5.5H7z" fill="white"/><path d="M20 16c0-2.3-1.3-4.4-3.3-5.5v11c2-1.1 3.3-3.2 3.3-5.5z" fill="white" opacity="0.7"/></svg>
+        </div>
+        <div>
+          <span class="brand-name">TabMixer</span>
+          <span class="brand-sub">by XYLAS</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="btn-icon"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.22 1.78a1 1 0 011.42 1.42l-.7.7a1 1 0 11-1.42-1.42l.7-.7zM18 9a1 1 0 110 2h-1a1 1 0 110-2h1zM10 16a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM4 10a1 1 0 110-2H3a1 1 0 100 2h1zm10 5.5a4 4 0 100-8 4 4 0 000 8z"/></svg></div>
+        <div class="btn-reset"><svg viewBox="0 0 16 16" fill="none"><path d="M13.5 8A5.5 5.5 0 1 1 8.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><polyline points="11,0.5 13.5,2.5 11.5,5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Reset All</div>
+      </div>
+    </div>
+    <div class="status-bar">
+      <div class="status-dot"></div>
+      <span class="status-text">3 tabs playing</span>
+    </div>
+    <div class="main">
+
+      <!-- Card 1 - YouTube -->
+      <div class="tab-card">
+        <div class="tab-header">
+          <img class="tab-favicon" src="https://www.youtube.com/favicon.ico" alt="">
+          <span class="tab-title">7 Times Suzuka Gave Us An Epic Race</span>
+          <span class="playing-badge"></span>
+          <div class="tab-controls">
+            <div class="mute-btn"><svg class="icon-vol" viewBox="0 0 20 20" fill="#9694B0"><path d="M4.5 7.5v5h3L12 17V3L7.5 7.5h-3z"/><path d="M13.5 10c0-1.77-1-3.3-2.5-4.1v8.2c1.5-.8 2.5-2.33 2.5-4.1z"/></svg></div>
+            <div class="vol-stepper">
+              <div class="step-btn">−</div>
+              <span class="vol-display">100%</span>
+              <div class="step-btn">+</div>
+            </div>
+          </div>
+        </div>
+        <div class="slider-section">
+          <span class="range-label">0</span>
+          <div class="slider-wrap">
+            <div class="track"></div>
+            <div class="fill" style="width:50%"></div>
+            <div class="baseline"></div>
+            <div class="thumb" style="left:calc(50% - 8px)"></div>
+          </div>
+          <span class="range-label boost-label">6×</span>
+        </div>
+        <div class="preset-row">
+          <div class="preset-btn">Mute</div><div class="preset-btn">5%</div><div class="preset-btn">25%</div><div class="preset-btn">50%</div><div class="preset-btn active">100%</div><div class="preset-btn">2×</div><div class="preset-btn">4×</div>
+        </div>
+      </div>
+
+      <!-- Card 2 - Spotify boosted -->
+      <div class="tab-card">
+        <div class="tab-header">
+          <img class="tab-favicon" src="https://open.spotify.com/favicon.ico" alt="">
+          <span class="tab-title">Khan Sir on World War 3, India vs Pakistan...</span>
+          <span class="playing-badge"></span>
+          <div class="tab-controls">
+            <div class="mute-btn"><svg viewBox="0 0 20 20" fill="#9694B0"><path d="M4.5 7.5v5h3L12 17V3L7.5 7.5h-3z"/><path d="M13.5 10c0-1.77-1-3.3-2.5-4.1v8.2c1.5-.8 2.5-2.33 2.5-4.1z"/></svg></div>
+            <div class="vol-stepper">
+              <div class="step-btn">−</div>
+              <span class="vol-display boosted">252%</span>
+              <div class="step-btn">+</div>
+            </div>
+          </div>
+        </div>
+        <div class="slider-section">
+          <span class="range-label">0</span>
+          <div class="slider-wrap">
+            <div class="track"></div>
+            <div class="fill" style="width:65%"></div>
+            <div class="baseline"></div>
+            <div class="thumb" style="left:calc(65% - 8px)"></div>
+          </div>
+          <span class="range-label boost-label">6×</span>
+        </div>
+        <div class="preset-row">
+          <div class="preset-btn">Mute</div><div class="preset-btn">5%</div><div class="preset-btn">25%</div><div class="preset-btn">50%</div><div class="preset-btn">100%</div><div class="preset-btn">2×</div><div class="preset-btn">4×</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="footer">
+      <a class="watermark" href="#"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.65 7.65 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>XYLAS</a>
+      <span class="footer-sep" style="color:#46445E">·</span>
+      <span class="footer-tip">Up to 600% · Precision mode</span>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHT -->
+<div class="mockup-wrap">
+  <div class="mockup-label">Light Mode</div>
+  <div class="popup light">
+    <div class="header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M7 11.5v9h5L18 26V6l-6 5.5H7z" fill="white"/><path d="M20 16c0-2.3-1.3-4.4-3.3-5.5v11c2-1.1 3.3-3.2 3.3-5.5z" fill="white" opacity="0.7"/></svg>
+        </div>
+        <div>
+          <span class="brand-name">TabMixer</span>
+          <span class="brand-sub">by XYLAS</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="btn-icon"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg></div>
+        <div class="btn-reset"><svg viewBox="0 0 16 16" fill="none"><path d="M13.5 8A5.5 5.5 0 1 1 8.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><polyline points="11,0.5 13.5,2.5 11.5,5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Reset All</div>
+      </div>
+    </div>
+    <div class="status-bar">
+      <div class="status-dot"></div>
+      <span class="status-text">3 tabs playing</span>
+    </div>
+    <div class="main">
+      <div class="tab-card">
+        <div class="tab-header">
+          <img class="tab-favicon" src="https://www.youtube.com/favicon.ico" alt="">
+          <span class="tab-title">Top 3 Tissot Sprint Moments - Formula 1</span>
+          <span class="playing-badge"></span>
+          <div class="tab-controls">
+            <div class="mute-btn"><svg viewBox="0 0 20 20" fill="#4A4580"><path d="M4.5 7.5v5h3L12 17V3L7.5 7.5h-3z"/><path d="M13.5 10c0-1.77-1-3.3-2.5-4.1v8.2c1.5-.8 2.5-2.33 2.5-4.1z"/></svg></div>
+            <div class="vol-stepper">
+              <div class="step-btn">−</div>
+              <span class="vol-display">50%</span>
+              <div class="step-btn">+</div>
+            </div>
+          </div>
+        </div>
+        <div class="slider-section">
+          <span class="range-label">0</span>
+          <div class="slider-wrap">
+            <div class="track"></div>
+            <div class="fill" style="width:25%"></div>
+            <div class="baseline" style="background:rgba(0,0,0,0.1)"></div>
+            <div class="thumb" style="left:calc(25% - 8px); box-shadow: 0 0 0 2.5px #6056E8, 0 2px 8px rgba(0,0,0,0.2)"></div>
+          </div>
+          <span class="range-label boost-label">6×</span>
+        </div>
+        <div class="preset-row">
+          <div class="preset-btn">Mute</div><div class="preset-btn">5%</div><div class="preset-btn">25%</div><div class="preset-btn active">50%</div><div class="preset-btn">100%</div><div class="preset-btn">2×</div><div class="preset-btn">4×</div>
+        </div>
+      </div>
+      <div class="tab-card">
+        <div class="tab-header">
+          <img class="tab-favicon" src="https://www.youtube.com/favicon.ico" alt="">
+          <span class="tab-title">The Greatest Overtakes In Formula 1 History</span>
+          <span class="playing-badge"></span>
+          <div class="tab-controls">
+            <div class="mute-btn"><svg viewBox="0 0 20 20" fill="#4A4580"><path d="M4.5 7.5v5h3L12 17V3L7.5 7.5h-3z"/><path d="M13.5 10c0-1.77-1-3.3-2.5-4.1v8.2c1.5-.8 2.5-2.33 2.5-4.1z"/></svg></div>
+            <div class="vol-stepper">
+              <div class="step-btn">−</div>
+              <span class="vol-display boosted" style="color:#6056E8">200%</span>
+              <div class="step-btn">+</div>
+            </div>
+          </div>
+        </div>
+        <div class="slider-section">
+          <span class="range-label">0</span>
+          <div class="slider-wrap">
+            <div class="track"></div>
+            <div class="fill" style="width:60%"></div>
+            <div class="baseline" style="background:rgba(0,0,0,0.1)"></div>
+            <div class="thumb" style="left:calc(60% - 8px); box-shadow: 0 0 0 2.5px #6056E8, 0 2px 8px rgba(0,0,0,0.2)"></div>
+          </div>
+          <span class="range-label boost-label">6×</span>
+        </div>
+        <div class="preset-row">
+          <div class="preset-btn">Mute</div><div class="preset-btn">5%</div><div class="preset-btn">25%</div><div class="preset-btn">50%</div><div class="preset-btn">100%</div><div class="preset-btn active">2×</div><div class="preset-btn">4×</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <a class="watermark" href="#"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.65 7.65 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>XYLAS</a>
+      <span class="footer-sep" style="color:#9590C8">·</span>
+      <span class="footer-tip">Up to 600% · Precision mode</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
